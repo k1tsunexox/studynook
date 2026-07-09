@@ -1,12 +1,10 @@
-import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
-import { getEnv } from "@/lib/env";
+import { env } from "@/lib/env";
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-
-  const env = getEnv();
 
   return createServerClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
@@ -22,7 +20,7 @@ export async function createSupabaseServerClient() {
             try {
               cookieStore.set(name, value, options);
             } catch {
-              // Cookie writes may fail in some Server Component contexts.
+              // Cookie writes may fail during Server Component rendering.
             }
           });
         },
