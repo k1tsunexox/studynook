@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -41,26 +41,19 @@ export async function middleware(request: NextRequest) {
   const protectedRoute = pathname.startsWith("/dashboard");
 
   const authRoute =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/signup");
+    pathname.startsWith("/login") || pathname.startsWith("/signup");
 
   if (!user && protectedRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   if (user && authRoute) {
-    return NextResponse.redirect(
-      new URL("/dashboard", request.url),
-    );
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/login",
-    "/signup",
-  ],
+  matcher: ["/dashboard/:path*", "/login", "/signup"],
 };
