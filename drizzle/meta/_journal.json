@@ -8,6 +8,13 @@
       "when": 1783598637071,
       "tag": "0000_whole_pepper_potts",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1783607567857,
+      "tag": "0001_abandoned_paibok",
+      "breakpoints": true
     }
   ]
 }
