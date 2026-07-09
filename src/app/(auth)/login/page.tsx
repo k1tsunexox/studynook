@@ -19,7 +19,7 @@ export default function LoginPage() {
           <LoginForm />
 
           <p className="text-muted-foreground text-center text-sm">
-            {"Don't have an account? "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/signup"
               className="font-medium underline underline-offset-4"

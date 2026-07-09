@@ -8,30 +8,32 @@ import { useTransition } from "react";
 import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { signIn } from "@/features/auth/actions/auth";
+import { signUp } from "@/features/auth/actions/auth";
 import {
-  loginSchema,
-  type LoginInput,
+  signupSchema,
+  type SignupInput,
 } from "@/features/auth/schemas/auth-schema";
 
-export function LoginForm() {
+export function SignupForm() {
   const [isPending, startTransition] = useTransition();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<SignupInput>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      fullName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  function onSubmit(values: LoginInput) {
+  function onSubmit(values: SignupInput) {
     startTransition(async () => {
-      const result = await signIn(values);
+      const result = await signUp(values);
 
       if (!result.success) {
         toast.error(result.message);
@@ -43,15 +45,17 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormField
+        id="fullName"
+        label="Full Name"
+        error={errors.fullName?.message}
+      >
+        <Input id="fullName" {...register("fullName")} />
+      </FormField>
+
       <FormField id="email" label="Email" error={errors.email?.message}>
-        <Input
-          id="email"
-          type="email"
-          placeholder="you@example.com"
-          disabled={isPending}
-          {...register("email")}
-        />
+        <Input id="email" type="email" {...register("email")} />
       </FormField>
 
       <FormField
@@ -59,16 +63,23 @@ export function LoginForm() {
         label="Password"
         error={errors.password?.message}
       >
+        <Input id="password" type="password" {...register("password")} />
+      </FormField>
+
+      <FormField
+        id="confirmPassword"
+        label="Confirm Password"
+        error={errors.confirmPassword?.message}
+      >
         <Input
-          id="password"
+          id="confirmPassword"
           type="password"
-          disabled={isPending}
-          {...register("password")}
+          {...register("confirmPassword")}
         />
       </FormField>
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Signing in..." : "Sign In"}
+        {isPending ? "Creating account..." : "Create Account"}
       </Button>
     </form>
   );

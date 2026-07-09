@@ -1,103 +1,36 @@
-"use client";
+import Link from "next/link";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useTransition } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SignupForm } from "@/features/auth/components/signup-form";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { signUp } from "@/features/auth/actions/auth";
-import {
-  signupSchema,
-  type SignupInput,
-} from "@/features/auth/schemas/auth-schema";
-
-export function SignupForm() {
-  const [isPending, startTransition] = useTransition();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<SignupInput>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  function onSubmit(values: SignupInput) {
-    startTransition(async () => {
-      const result = await signUp(values);
-
-      if (!result.success) {
-        toast.error(result.message);
-        return;
-      }
-
-      toast.success(result.message);
-    });
-  }
-
+export default function SignupPage() {
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div>
-        <label className="mb-2 block text-sm font-medium">Full Name</label>
+    <main className="flex min-h-screen items-center justify-center px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl">
+            Create your StudyNook account
+          </CardTitle>
 
-        <Input {...register("fullName")} />
-
-        {errors.fullName && (
-          <p className="text-destructive mt-1 text-sm">
-            {errors.fullName.message}
+          <p className="text-muted-foreground text-sm">
+            Sign up to organize your courses, assignments, and notes.
           </p>
-        )}
-      </div>
+        </CardHeader>
 
-      <div>
-        <label className="mb-2 block text-sm font-medium">Email</label>
+        <CardContent className="space-y-6">
+          <SignupForm />
 
-        <Input type="email" {...register("email")} />
-
-        {errors.email && (
-          <p className="text-destructive mt-1 text-sm">
-            {errors.email.message}
+          <p className="text-muted-foreground text-center text-sm">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-medium underline underline-offset-4"
+            >
+              Sign in
+            </Link>
           </p>
-        )}
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium">Password</label>
-
-        <Input type="password" {...register("password")} />
-
-        {errors.password && (
-          <p className="text-destructive mt-1 text-sm">
-            {errors.password.message}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Confirm Password
-        </label>
-
-        <Input type="password" {...register("confirmPassword")} />
-
-        {errors.confirmPassword && (
-          <p className="text-destructive mt-1 text-sm">
-            {errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? "Creating account..." : "Create Account"}
-      </Button>
-    </form>
+        </CardContent>
+      </Card>
+    </main>
   );
 }
