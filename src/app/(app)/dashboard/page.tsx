@@ -1,15 +1,13 @@
 export default function DashboardPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold">
-          Dashboard
-        </h1>
+    <main className="p-8">
+      <h1 className="text-4xl font-bold">
+        StudyNook Dashboard
+      </h1>
 
-        <p className="mt-3 text-muted-foreground">
-          Welcome to StudyNook.
-        </p>
-      </div>
+      <p className="mt-3 text-muted-foreground">
+        Authentication middleware is active.
+      </p>
     </main>
   );
 }
