@@ -20,11 +20,13 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SignupInput>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      fullName: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -41,21 +43,48 @@ export function SignupForm() {
       }
 
       toast.success(result.message);
+      reset();
     });
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <FormField
-        id="fullName"
-        label="Full Name"
-        error={errors.fullName?.message}
-      >
-        <Input id="fullName" {...register("fullName")} />
-      </FormField>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FormField
+          id="firstName"
+          label="First Name"
+          error={errors.firstName?.message}
+        >
+          <Input
+            id="firstName"
+            autoComplete="given-name"
+            disabled={isPending}
+            {...register("firstName")}
+          />
+        </FormField>
+
+        <FormField
+          id="lastName"
+          label="Last Name"
+          error={errors.lastName?.message}
+        >
+          <Input
+            id="lastName"
+            autoComplete="family-name"
+            disabled={isPending}
+            {...register("lastName")}
+          />
+        </FormField>
+      </div>
 
       <FormField id="email" label="Email" error={errors.email?.message}>
-        <Input id="email" type="email" {...register("email")} />
+        <Input
+          id="email"
+          type="email"
+          autoComplete="email"
+          disabled={isPending}
+          {...register("email")}
+        />
       </FormField>
 
       <FormField
@@ -63,7 +92,13 @@ export function SignupForm() {
         label="Password"
         error={errors.password?.message}
       >
-        <Input id="password" type="password" {...register("password")} />
+        <Input
+          id="password"
+          type="password"
+          autoComplete="new-password"
+          disabled={isPending}
+          {...register("password")}
+        />
       </FormField>
 
       <FormField
@@ -74,6 +109,8 @@ export function SignupForm() {
         <Input
           id="confirmPassword"
           type="password"
+          autoComplete="new-password"
+          disabled={isPending}
           {...register("confirmPassword")}
         />
       </FormField>
