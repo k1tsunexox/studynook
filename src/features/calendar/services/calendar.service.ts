@@ -5,7 +5,7 @@ import { getCurrentExams } from "@/features/exams/services/exam.service";
 import type { CalendarEvent } from "../types";
 
 export async function getCalendarEvents(): Promise<CalendarEvent[]> {
-  const [assignments, exams, schedules] = await Promise.all([
+  const [assignments, exams] = await Promise.all([
     getCurrentAssignments(),
     getCurrentExams(),
     getCurrentSchedule(),

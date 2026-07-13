@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { subjects } from "./subjects";
@@ -27,3 +28,10 @@ export const notes = pgTable("notes", {
     .defaultNow()
     .notNull(),
 });
+
+export const notesRelations = relations(notes, ({ one }) => ({
+  subject: one(subjects, {
+    fields: [notes.subjectId],
+    references: [subjects.id],
+  }),
+}));
