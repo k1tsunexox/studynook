@@ -36,6 +36,41 @@
       "when": 1783940162667,
       "tag": "0004_bizarre_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783942080290,
+      "tag": "0005_supreme_hellfire_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783943015581,
+      "tag": "0006_unusual_la_nuit",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1783943952998,
+      "tag": "0007_mute_scorpion",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1783944375091,
+      "tag": "0008_mean_chronomancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1783950069317,
+      "tag": "0009_clever_human_cannonball",
+      "breakpoints": true
     }
   ]
 }

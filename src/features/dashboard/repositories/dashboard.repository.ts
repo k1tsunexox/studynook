@@ -3,14 +3,7 @@ import "server-only";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import {
-  academicProfiles,
-  assignments,
-  classSchedules,
-  exams,
-  profiles,
-  subjects,
-} from "@/db/schema";
+import { academicProfiles, profiles, subjects } from "@/db/schema";
 
 export async function getDashboard(userId: string) {
   const profile = await db.query.profiles.findFirst({
