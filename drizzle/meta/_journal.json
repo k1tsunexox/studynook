@@ -15,6 +15,27 @@
       "when": 1783695459173,
       "tag": "0001_empty_misty_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783937925999,
+      "tag": "0002_fantastic_wallflower",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783938823341,
+      "tag": "0003_ancient_emma_frost",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783940162667,
+      "tag": "0004_bizarre_kylun",
+      "breakpoints": true
     }
   ]
 }
