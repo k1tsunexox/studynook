@@ -8,6 +8,7 @@ import {
   type LoginInput,
   type SignupInput,
 } from "@/features/auth/schemas/auth-schema";
+import { env } from "@/lib/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type AuthResult =
@@ -40,7 +41,7 @@ export async function signIn(values: LoginInput): Promise<AuthResult> {
   if (error) {
     return {
       success: false,
-      message: error.message,
+      message: "Invalid email or password.",
     };
   }
 
@@ -64,9 +65,10 @@ export async function signUp(values: SignupInput): Promise<AuthResult> {
     password: parsed.data.password,
     options: {
       data: {
-        full_name: parsed.data.fullName,
+        first_name: parsed.data.firstName,
+        last_name: parsed.data.lastName,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      emailRedirectTo: `${env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     },
   });
 
@@ -79,8 +81,10 @@ export async function signUp(values: SignupInput): Promise<AuthResult> {
 
   return {
     success: true,
-    message: "Check your email to verify your account.",
+    message: "Your account has been created. Check your email to verify it.",
   };
+
+  console.log("User signed up successfully.");
 }
 
 export async function signOut() {
