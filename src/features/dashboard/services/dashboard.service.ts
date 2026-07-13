@@ -1,20 +1,24 @@
 import "server-only";
 
+import { redirect } from "next/navigation";
+
+import { getAcademicProfile } from "@/features/academic/repositories/academic.repository";
+import { getCurrentUser } from "@/features/auth/profile/repositories/auth.repository";
 import { getCurrentUserProfile } from "@/features/profile/services/profile.service";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function getDashboardData() {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   if (!user) {
-    return null;
+    redirect("/login");
   }
 
   const profile = await getCurrentUserProfile();
+  const academicProfile = await getAcademicProfile(user.id);
+
+  if (!academicProfile) {
+    redirect("/onboarding");
+  }
 
   const displayName =
     [profile?.firstName, profile?.lastName].filter(Boolean).join(" ").trim() ||
@@ -24,6 +28,7 @@ export async function getDashboardData() {
   return {
     user,
     profile,
+    academicProfile,
     displayName,
   };
 }
