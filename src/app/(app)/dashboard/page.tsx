@@ -1,46 +1,110 @@
-import { QuickActions } from "@/features/dashboard/components/quick-actions";
-import { StudyMetrics } from "@/features/dashboard/components/study-metrics";
-import { getCurrentUserFlashcards } from "@/features/flashcards/services/flashcard.service";
-import { getCurrentUserNotes } from "@/features/notes/services/note.service";
-import { getNotifications } from "@/features/notifications/services/notification.service";
-import { fetchTodayStats } from "@/features/pomodoro/services/pomodoro.service";
+import { BookOpen, CalendarDays, Clock3, GraduationCap } from "lucide-react";
 
-// TODO: Keep your existing imports here (e.g., AssignmentsList, getAssignments, etc.)
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
-export default async function DashboardPage() {
-  // Combine all your data fetching here
-  const [
-    focusMinutes,
-    notes,
-    flashcards,
-    notifications /*, existingAssignments, etc. */,
-  ] = await Promise.all([
-    fetchTodayStats(),
-    getCurrentUserNotes(),
-    getCurrentUserFlashcards(),
-    getNotifications(),
-    // TODO: Put your existing getAssignments(), getClasses() calls here
-  ]);
-
-  // Explicit type added to fix the "implicit any" error
-  const unreadCount = notifications.filter(
-    (n: { isRead: boolean }) => !n.isRead,
-  ).length;
-
+export default function DashboardPage() {
   return (
-    <main className="space-y-8 p-6">
-      {/* 1. New Polished Top Section */}
-      <StudyMetrics
-        focusMinutes={focusMinutes}
-        notesCount={notes.length}
-        flashcardsCount={flashcards.length}
-        unreadNotifications={unreadCount}
-      />
+    <div className="space-y-8">
+      <section className="flex flex-col gap-6 rounded-3xl bg-gradient-to-r from-sky-100 to-white p-8 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-2xl">
+          <p className="font-medium text-sky-700">Welcome back</p>
 
-      <QuickActions />
+          <h1 className="mt-3 text-4xl font-bold text-slate-900 lg:text-5xl">
+            Your study dashboard
+          </h1>
 
-      {/* 2. Your Existing Sections */}
-      {/* TODO: Put your existing JSX for Assignments, Classes, and Exams down here */}
-    </main>
+          <p className="mt-4 text-slate-600">
+            Manage subjects, notes, assignments, flashcards and study sessions
+            from one place.
+          </p>
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button>Continue Studying</Button>
+
+            <Button variant="outline">Open Calendar</Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          icon={<BookOpen className="h-6 w-6" />}
+          title="Subjects"
+          value="6"
+        />
+
+        <StatCard
+          icon={<GraduationCap className="h-6 w-6" />}
+          title="Assignments"
+          value="12"
+        />
+
+        <StatCard
+          icon={<CalendarDays className="h-6 w-6" />}
+          title="Exams"
+          value="2"
+        />
+
+        <StatCard
+          icon={<Clock3 className="h-6 w-6" />}
+          title="Hours"
+          value="42"
+        />
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-3">
+        <Card className="rounded-3xl xl:col-span-2">
+          <CardContent className="p-8">
+            <h2 className="text-xl font-semibold">Weekly Overview</h2>
+
+            <div className="mt-6 flex h-80 items-center justify-center rounded-2xl border border-dashed">
+              Schedule Component
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-3xl">
+          <CardContent className="p-8">
+            <h2 className="text-xl font-semibold">Today&#39;s Tasks</h2>
+
+            <div className="mt-5 space-y-4">
+              <Task title="Review Flashcards" />
+              <Task title="Computer Networks" />
+              <Task title="Finish Assignment" />
+              <Task title="Pomodoro Session" />
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    </div>
   );
+}
+
+function StatCard({
+  icon,
+  title,
+  value,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+}) {
+  return (
+    <Card className="rounded-3xl">
+      <CardContent className="flex items-center justify-between p-6">
+        <div>
+          <p className="text-sm text-slate-500">{title}</p>
+
+          <h2 className="mt-2 text-3xl font-bold">{value}</h2>
+        </div>
+
+        <div className="rounded-2xl bg-sky-100 p-4 text-sky-600">{icon}</div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function Task({ title }: { title: string }) {
+  return <div className="rounded-xl bg-slate-50 p-4">{title}</div>;
 }
