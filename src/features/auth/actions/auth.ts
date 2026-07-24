@@ -83,8 +83,6 @@ export async function signUp(values: SignupInput): Promise<AuthResult> {
     success: true,
     message: "Your account has been created. Check your email to verify it.",
   };
-
-  console.log("User signed up successfully.");
 }
 
 export async function signOut() {

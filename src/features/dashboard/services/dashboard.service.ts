@@ -11,8 +11,5 @@ export async function getDashboardData() {
 
   const dashboard = await getDashboard(user.id);
 
-  return {
-    user,
-    ...dashboard,
-  };
+  return { user, dashboard };
 }

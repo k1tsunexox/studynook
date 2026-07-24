@@ -1,36 +1,28 @@
-import { z } from "zod";
 import { redirect } from "next/navigation";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-const EnvSchema = z.object({
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
-  // add any callback-specific required vars here
-});
-
-const parsed = EnvSchema.safeParse(process.env);
-
-if (!parsed.success) {
-  // fail with actionable message instead of opaque build-time ZodError
-  throw new Error(
-    "Invalid auth callback environment variables: " +
-      JSON.stringify(parsed.error.flatten().fieldErrors),
-  );
+function getSafeRedirectPath(next: string | null) {
+  return next?.startsWith("/") && !next.startsWith("//")
+    ? next
+    : "/dashboard";
 }
-
-const env = parsed.data;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-
   const code = searchParams.get("code");
+  const next = getSafeRedirectPath(searchParams.get("next"));
 
-  if (code) {
-    const supabase = await createSupabaseServerClient();
-
-    await supabase.auth.exchangeCodeForSession(code);
+  if (!code) {
+    redirect("/login?error=missing_auth_code");
   }
 
-  redirect("/dashboard");
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    redirect("/login?error=auth_callback_failed");
+  }
+
+  redirect(next);
 }

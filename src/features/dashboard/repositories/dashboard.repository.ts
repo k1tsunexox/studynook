@@ -1,18 +1,26 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 import { db } from "@/db";
-import { academicProfiles, profiles, subjects } from "@/db/schema";
+import {
+  academicProfiles,
+  assignments,
+  classSchedules,
+  exams,
+  profiles,
+  subjects,
+} from "@/db/schema";
 
 export async function getDashboard(userId: string) {
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, userId),
-  });
-
-  const academicProfile = await db.query.academicProfiles.findFirst({
-    where: eq(academicProfiles.userId, userId),
-  });
+  const [profile, academicProfile] = await Promise.all([
+    db.query.profiles.findFirst({
+      where: eq(profiles.id, userId),
+    }),
+    db.query.academicProfiles.findFirst({
+      where: eq(academicProfiles.userId, userId),
+    }),
+  ]);
 
   if (!academicProfile) {
     return null;
@@ -24,18 +32,26 @@ export async function getDashboard(userId: string) {
 
   const subjectIds = subjectList.map((s) => s.id);
 
-  const schedule = await db.query.classSchedules.findMany();
-
-  const assignmentList = await db.query.assignments.findMany();
-
-  const examList = await db.query.exams.findMany();
+  const [schedule, assignmentList, examList] = subjectIds.length
+    ? await Promise.all([
+        db.query.classSchedules.findMany({
+          where: inArray(classSchedules.subjectId, subjectIds),
+        }),
+        db.query.assignments.findMany({
+          where: inArray(assignments.subjectId, subjectIds),
+        }),
+        db.query.exams.findMany({
+          where: inArray(exams.subjectId, subjectIds),
+        }),
+      ])
+    : [[], [], []];
 
   return {
     profile,
     academicProfile,
     subjects: subjectList,
     schedule: schedule.filter((s) => subjectIds.includes(s.subjectId)),
-    assignments: assignmentList.filter((a) => subjectIds.includes(a.subjectId)),
-    exams: examList.filter((e) => subjectIds.includes(e.subjectId)),
+    assignments: assignmentList,
+    exams: examList,
   };
 }
