@@ -10,10 +10,15 @@ export default async function NotesPage() {
   ]);
 
   return (
-    <main className="space-y-8 p-6">
+    <main className="mx-auto max-w-4xl space-y-7 pb-10">
       <div>
-        <h1 className="text-3xl font-bold">Notes</h1>
-        <p className="text-muted-foreground">
+        <p className="text-[10px] font-semibold tracking-widest text-slate-400 uppercase">
+          Workspace
+        </p>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
+          Notes
+        </h1>
+        <p className="mt-0.5 text-sm text-slate-500">
           Manage your study notes and link them to your subjects.
         </p>
       </div>
@@ -22,8 +27,10 @@ export default async function NotesPage() {
         <NoteForm subjects={subjects} />
       </div>
 
-      <div className="pt-6">
-        <h2 className="mb-4 text-2xl font-semibold">Your Notes</h2>
+      <div className="pt-2">
+        <h2 className="mb-4 text-sm font-semibold text-slate-700">
+          Your Notes
+        </h2>
         <NoteList notes={notes} />
       </div>
     </main>
