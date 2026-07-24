@@ -23,7 +23,7 @@ export async function saveNote(values: NoteInput) {
       success: true,
       message: "Note saved successfully.",
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Failed to save note. Please try again.",
@@ -40,7 +40,7 @@ export async function deleteNoteAction(id: string) {
       success: true,
       message: "Note deleted successfully.",
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Failed to delete note.",

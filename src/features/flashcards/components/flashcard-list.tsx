@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 import { deleteFlashcardAction } from "../actions/flashcards";
 
@@ -64,6 +64,8 @@ export function FlashcardList({ flashcards }: { flashcards: Flashcard[] }) {
                   size="icon"
                   className="h-6 w-6"
                   onClick={(e) => handleDelete(card.id, e)}
+                  disabled={isPending}
+                  aria-label={`Delete flashcard: ${card.question}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>

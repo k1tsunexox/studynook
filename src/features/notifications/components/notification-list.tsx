@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +36,6 @@ export function NotificationList({
 }: {
   notifications: Notification[];
 }) {
-  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
