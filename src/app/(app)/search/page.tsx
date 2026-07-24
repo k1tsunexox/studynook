@@ -12,130 +12,106 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-
   const query = q ?? "";
-
   const results = await performGlobalSearch(query);
-
   const hasResults =
     results.notes.length > 0 ||
     results.flashcards.length > 0 ||
     results.documents.length > 0;
 
   return (
-    <main className="space-y-8 p-6">
-      <div className="flex flex-col items-center justify-center space-y-4 py-8">
-        <h1 className="text-3xl font-bold">Global Search</h1>
-
-        <Suspense fallback={<div>Loading search...</div>}>
-          <SearchBar />
-        </Suspense>
+    <main className="mx-auto max-w-4xl space-y-8 pb-12">
+      <div className="border-b border-[#E7E2D9] pb-6">
+        <p className="text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+          Tools
+        </p>
+        <h1 className="mt-1.5 text-[1.75rem] font-semibold tracking-tight text-slate-900">
+          Search
+        </h1>
       </div>
 
+      <Suspense
+        fallback={<div className="text-sm text-slate-400">Loading…</div>}
+      >
+        <SearchBar />
+      </Suspense>
+
       {query && !hasResults && (
-        <div className="text-muted-foreground py-12 text-center">
-          No results found for &quot;{query}&quot;.
-        </div>
+        <p className="py-12 text-center text-sm text-slate-400">
+          No results for &quot;{query}&quot;.
+        </p>
       )}
 
       {query && hasResults && (
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {results.notes.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <FileText className="h-5 w-5" />
-                Notes
-              </h2>
-
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+                <FileText className="size-3.5" /> Notes
+              </p>
               {results.notes.map((note) => (
-                <Card
+                <Link
                   key={note.id}
-                  className="hover:border-primary transition-colors"
+                  href="/notes"
+                  className="block rounded-xl border border-[#E7E2D9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/30"
                 >
-                  <Link href="/notes">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{note.title}</CardTitle>
-
-                      {note.subject && (
-                        <p className="text-muted-foreground text-xs">
-                          {note.subject.code}
-                        </p>
-                      )}
-                    </CardHeader>
-
-                    <CardContent>
-                      <p className="text-muted-foreground line-clamp-2 text-sm">
-                        {note.content}
-                      </p>
-                    </CardContent>
-                  </Link>
-                </Card>
+                  <p className="font-medium text-slate-900">{note.title}</p>
+                  {note.subject && (
+                    <p className="mt-0.5 text-[11px] font-bold tracking-wide text-sky-600 uppercase">
+                      {note.subject.code}
+                    </p>
+                  )}
+                  <p className="mt-2 line-clamp-2 text-xs text-slate-400">
+                    {note.content}
+                  </p>
+                </Link>
               ))}
             </div>
           )}
-
           {results.flashcards.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <Layers className="h-5 w-5" />
-                Flashcards
-              </h2>
-
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+                <Layers className="size-3.5" /> Flashcards
+              </p>
               {results.flashcards.map((card) => (
-                <Card
+                <Link
                   key={card.id}
-                  className="hover:border-primary transition-colors"
+                  href="/flashcards"
+                  className="block rounded-xl border border-[#E7E2D9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/30"
                 >
-                  <Link href="/flashcards">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{card.question}</CardTitle>
-
-                      {card.note && (
-                        <p className="text-muted-foreground text-xs">
-                          From: {card.note.title}
-                        </p>
-                      )}
-                    </CardHeader>
-
-                    <CardContent>
-                      <p className="text-muted-foreground line-clamp-2 text-sm">
-                        {card.answer}
-                      </p>
-                    </CardContent>
-                  </Link>
-                </Card>
+                  <p className="font-medium text-slate-900">{card.question}</p>
+                  {card.note && (
+                    <p className="mt-0.5 text-[11px] text-slate-400">
+                      From: {card.note.title}
+                    </p>
+                  )}
+                  <p className="mt-2 line-clamp-2 text-xs text-slate-400">
+                    {card.answer}
+                  </p>
+                </Link>
               ))}
             </div>
           )}
-
           {results.documents.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <File className="h-5 w-5" />
-                Documents
-              </h2>
-
+            <div className="space-y-3">
+              <p className="flex items-center gap-1.5 text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+                <File className="size-3.5" /> Documents
+              </p>
               {results.documents.map((doc) => (
-                <Card
+                <a
                   key={doc.id}
-                  className="hover:border-primary transition-colors"
+                  href={doc.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl border border-[#E7E2D9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/30"
                 >
-                  <a
-                    href={doc.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg">{doc.title}</CardTitle>
-
-                      {doc.subject && (
-                        <p className="text-muted-foreground text-xs">
-                          {doc.subject.code}
-                        </p>
-                      )}
-                    </CardHeader>
-                  </a>
-                </Card>
+                  <p className="font-medium text-slate-900">{doc.title}</p>
+                  {doc.subject && (
+                    <p className="mt-0.5 text-[11px] font-bold tracking-wide text-sky-600 uppercase">
+                      {doc.subject.code}
+                    </p>
+                  )}
+                </a>
               ))}
             </div>
           )}

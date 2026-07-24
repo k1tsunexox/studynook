@@ -8,29 +8,29 @@ export default async function NotificationsPage() {
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   return (
-    <main className="mx-auto max-w-4xl space-y-8 p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 rounded-full p-2">
-          <Bell className="text-primary h-6 w-6" />
-        </div>
+    <main className="mx-auto max-w-4xl space-y-8 pb-12">
+      <div className="flex items-end justify-between border-b border-[#E7E2D9] pb-6">
         <div>
-          <h1 className="flex items-center gap-3 text-3xl font-bold">
+          <p className="text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+            Tools
+          </p>
+          <h1 className="mt-1.5 flex items-center gap-2.5 text-[1.75rem] font-semibold tracking-tight text-slate-900">
+            <span className="flex size-9 items-center justify-center rounded-xl bg-sky-50">
+              <Bell className="size-5 text-sky-600" />
+            </span>
             Notifications
-            {unreadCount > 0 && (
-              <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-medium">
-                {unreadCount} new
-              </span>
-            )}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="mt-1 text-sm text-slate-400">
             Stay on top of your study schedule and reminders.
           </p>
         </div>
+        {unreadCount > 0 && (
+          <span className="rounded-xl bg-sky-600 px-4 py-2 text-sm font-semibold text-white">
+            {unreadCount} new
+          </span>
+        )}
       </div>
-
-      <div className="pt-4">
-        <NotificationList notifications={notifications} />
-      </div>
+      <NotificationList notifications={notifications} />
     </main>
   );
 }

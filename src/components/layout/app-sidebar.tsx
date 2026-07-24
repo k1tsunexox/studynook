@@ -35,7 +35,7 @@ const utilityLinks = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-function NavLink({
+function NavIcon({
   href,
   label,
   icon: Icon,
@@ -49,74 +49,53 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 ${
+      title={label}
+      className={`group relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-150 ${
         active
-          ? "bg-sky-500/10 text-sky-700"
-          : "text-slate-500 hover:bg-[#EAE6DF] hover:text-slate-800"
+          ? "bg-sky-600 text-white shadow-sm"
+          : "text-slate-400 hover:bg-[#E8E2D9] hover:text-slate-700"
       }`}
     >
-      <Icon
-        className={`h-4 w-4 shrink-0 transition-colors ${
-          active ? "text-sky-600" : "text-slate-400 group-hover:text-slate-600"
-        }`}
-      />
-      {label}
+      <Icon className="h-[18px] w-[18px]" />
+      {/* Tooltip */}
+      <span className="pointer-events-none absolute left-14 z-50 rounded-lg bg-[#2a2825] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white opacity-0 shadow-lg transition-all duration-150 group-hover:opacity-100">
+        {label}
+        <span className="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#2a2825]" />
+      </span>
     </Link>
   );
 }
 
 export function AppSidebar() {
   const pathname = usePathname();
-
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-[#E7E2D9] bg-[#F3EEE7] lg:flex">
-      {/* Brand */}
-      <div className="px-5 py-5">
-        <Link href="/dashboard" className="flex items-baseline gap-1.5">
-          <span className="text-lg font-bold tracking-tight text-sky-700">
-            StudyNook
-          </span>
-          <span className="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wider text-sky-600 uppercase">
-            Beta
-          </span>
-        </Link>
-        <p className="mt-0.5 text-xs text-slate-400">Student Workspace</p>
-      </div>
+    <aside className="hidden w-16 shrink-0 flex-col items-center border-r border-[#E7E2D9] bg-[#F3EEE7] py-4 lg:flex">
+      {/* Logo mark */}
+      <Link
+        href="/dashboard"
+        className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm transition hover:bg-sky-700"
+        title="StudyNook"
+      >
+        <span className="text-sm font-bold tracking-tight">SN</span>
+      </Link>
 
-      <div className="mx-4 mb-3 h-px bg-[#E7E2D9]" />
+      <div className="mx-auto mb-3 h-px w-8 bg-[#E7E2D9]" />
 
       {/* Primary nav */}
-      <nav className="flex-1 overflow-y-auto px-3">
-        <p className="mb-1.5 px-3 text-[10px] font-semibold tracking-widest text-slate-400 uppercase">
-          Workspace
-        </p>
-        <div className="space-y-0.5">
-          {primaryLinks.map((link) => (
-            <NavLink key={link.href} {...link} active={isActive(link.href)} />
-          ))}
-        </div>
+      <nav className="flex flex-1 flex-col items-center gap-1 px-2">
+        {primaryLinks.map((link) => (
+          <NavIcon key={link.href} {...link} active={isActive(link.href)} />
+        ))}
 
-        <div className="my-4 h-px bg-[#E7E2D9]" />
+        <div className="my-2 h-px w-8 bg-[#E7E2D9]" />
 
-        <p className="mb-1.5 px-3 text-[10px] font-semibold tracking-widest text-slate-400 uppercase">
-          Tools
-        </p>
-        <div className="space-y-0.5">
-          {utilityLinks.map((link) => (
-            <NavLink key={link.href} {...link} active={isActive(link.href)} />
-          ))}
-        </div>
+        {utilityLinks.map((link) => (
+          <NavIcon key={link.href} {...link} active={isActive(link.href)} />
+        ))}
       </nav>
-
-      {/* Footer hint */}
-      <div className="px-5 py-4">
-        <p className="text-[11px] text-slate-400">
-          &copy; {new Date().getFullYear()} StudyNook
-        </p>
-      </div>
     </aside>
   );
 }
