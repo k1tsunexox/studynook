@@ -12,13 +12,19 @@ export default async function AssignmentsPage() {
   ]);
 
   return (
-    <main className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Assignments</h1>
+    <main className="mx-auto max-w-4xl space-y-8 pb-12">
+      <div className="border-b border-[#E7E2D9] pb-6">
+        <p className="text-[10px] font-semibold tracking-[0.15em] text-slate-400 uppercase">
+          Workspace
+        </p>
+        <h1 className="mt-1.5 text-[1.75rem] font-semibold tracking-tight text-slate-900">
+          Assignments
+        </h1>
+        <p className="mt-1 text-sm text-slate-400">
+          Track and manage your coursework deadlines.
+        </p>
       </div>
-
       <AssignmentForm subjects={subjects} />
-
       <AssignmentList assignments={assignments} />
     </main>
   );
