@@ -1,36 +1,30 @@
-import { Bell } from "lucide-react";
-
 import { NotificationList } from "@/features/notifications/components/notification-list";
 import { getNotifications } from "@/features/notifications/services/notification.service";
 
 export default async function NotificationsPage() {
   const notifications = await getNotifications();
   const unreadCount = notifications.filter((n) => !n.isRead).length;
-
   return (
-    <main className="mx-auto max-w-4xl space-y-8 p-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-primary/10 rounded-full p-2">
-          <Bell className="text-primary h-6 w-6" />
-        </div>
+    <main className="mx-auto max-w-4xl space-y-8 pb-10">
+      <div className="flex items-end justify-between border-b border-[#e7e2d9] pb-7">
         <div>
-          <h1 className="flex items-center gap-3 text-3xl font-bold">
+          <p className="text-[10px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+            Tools
+          </p>
+          <h1 className="mt-2 text-3xl font-light tracking-tight text-[#1a1916]">
             Notifications
-            {unreadCount > 0 && (
-              <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-sm font-medium">
-                {unreadCount} new
-              </span>
-            )}
           </h1>
-          <p className="text-muted-foreground">
-            Stay on top of your study schedule and reminders.
+          <p className="mt-1.5 text-sm font-light tracking-wide text-[#9c9890]">
+            Study reminders and schedule updates.
           </p>
         </div>
+        {unreadCount > 0 && (
+          <span className="rounded-xl bg-[#1a1916] px-4 py-2 text-[11px] font-medium tracking-[0.12em] text-white">
+            {unreadCount} new
+          </span>
+        )}
       </div>
-
-      <div className="pt-4">
-        <NotificationList notifications={notifications} />
-      </div>
+      <NotificationList notifications={notifications} />
     </main>
   );
 }

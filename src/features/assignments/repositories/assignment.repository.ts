@@ -20,24 +20,24 @@ export async function createAssignment(data: {
 }) {
   const [assignment] = await db
     .insert(assignments)
-    .values({
-      ...data,
-      dueAt: new Date(data.dueAt),
-    })
+    .values({ ...data, dueAt: new Date(data.dueAt) })
     .returning();
-
   return assignment;
 }
 
 export async function toggleAssignment(id: string, completed: boolean) {
   const [assignment] = await db
     .update(assignments)
-    .set({
-      completed,
-      updatedAt: new Date(),
-    })
+    .set({ completed, updatedAt: new Date() })
     .where(eq(assignments.id, id))
     .returning();
-
   return assignment;
+}
+
+export async function deleteAssignment(id: string) {
+  const [deleted] = await db
+    .delete(assignments)
+    .where(eq(assignments.id, id))
+    .returning();
+  return deleted;
 }

@@ -3,14 +3,16 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
+  ClipboardList,
   Clock3,
+  GraduationCap,
   Plus,
+  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { getDashboardData } from "@/features/dashboard/services/dashboard.service";
 
 export default async function DashboardPage() {
@@ -35,26 +37,34 @@ export default async function DashboardPage() {
   }).format(new Date());
 
   return (
-    <div className="mx-auto max-w-7xl space-y-7 pb-8">
+    <div className="mx-auto max-w-5xl space-y-10 pb-10">
+      {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm text-slate-500">{today}</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-900">
-            Good to see you, {firstName}.
+          <p className="text-[10px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+            {today}
+          </p>
+          <h1 className="mt-2 text-3xl font-light tracking-tight text-[#1a1916]">
+            Good to see you, <span className="font-normal">{firstName}.</span>
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Here&apos;s a clear view of your study week.
+          <p className="mt-1.5 text-sm font-light tracking-wide text-[#9c9890]">
+            Here&apos;s your study week at a glance.
           </p>
         </div>
-        <Button asChild className="bg-[#37352f] hover:bg-[#242321]">
+        <Button
+          asChild
+          size="sm"
+          className="h-8 shrink-0 rounded-lg bg-[#1a1916] px-5 text-[10px] font-medium tracking-[0.15em] text-white uppercase hover:bg-[#37352f]"
+        >
           <Link href="/notes">
-            <Plus className="mr-1.5 size-4" />
+            <Plus className="mr-1.5 size-3" />
             New note
           </Link>
         </Button>
       </header>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Metrics */}
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Metric
           icon={BookOpen}
           label="Subjects"
@@ -65,196 +75,230 @@ export default async function DashboardPage() {
           icon={CheckCircle2}
           label="Open tasks"
           value={pendingAssignments.length}
-          hint="Assignments to finish"
+          hint="Assignments"
         />
         <Metric
           icon={CalendarDays}
-          label="Upcoming exams"
+          label="Exams"
           value={upcomingExams}
-          hint="Stay ahead"
+          hint="Upcoming"
         />
         <Metric
           icon={Clock3}
           label="Classes"
           value={dashboard.schedule.length}
-          hint="On your schedule"
+          hint="Scheduled"
         />
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.5fr_.9fr]">
-        <Card className="border-black/6 bg-white shadow-sm">
-          <CardContent className="p-6 sm:p-7">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">
-                  Your workspace
-                </p>
-                <h2 className="mt-1 text-xl font-semibold">Subjects</h2>
-              </div>
-              <Link
-                href="/subjects"
-                className="inline-flex items-center gap-1 text-sm font-medium text-violet-700 hover:text-violet-900"
-              >
-                Manage <ArrowRight className="size-4" />
-              </Link>
+      {/* Main grid */}
+      <section className="grid gap-5 lg:grid-cols-[1fr_300px]">
+        {/* Subjects */}
+        <div className="rounded-2xl border border-[#e7e2d9] bg-white p-7">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-[9px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+                Workspace
+              </p>
+              <h2 className="mt-1.5 text-lg font-light text-[#1a1916]">
+                Subjects
+              </h2>
             </div>
-            {dashboard.subjects.length ? (
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {dashboard.subjects.slice(0, 4).map((subject) => (
-                  <Link
-                    href="/subjects"
-                    key={subject.id}
-                    className="group rounded-xl border border-black/6 p-4 transition hover:border-violet-200 hover:bg-violet-50/40"
-                  >
-                    <p className="text-xs font-semibold tracking-wide text-violet-700 uppercase">
-                      {subject.code}
-                    </p>
-                    <h3 className="mt-2 font-medium text-slate-800">
-                      {subject.title}
-                    </h3>
-                    <p className="mt-4 text-xs text-slate-500">
-                      {subject.units} units · {subject.section}
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                href="/subjects"
-                label="Add your first subject"
-                message="Your courses will become the foundation for notes, tasks, and schedules."
-              />
-            )}
-          </CardContent>
-        </Card>
+            <Link
+              href="/subjects"
+              className="flex items-center gap-1 text-[9px] font-medium tracking-[0.15em] text-[#9c9890] uppercase transition hover:text-[#1a1916]"
+            >
+              Manage <ArrowRight className="size-3" />
+            </Link>
+          </div>
 
-        <Card className="border-black/6 bg-[#37352f] text-white shadow-sm">
-          <CardContent className="p-6 sm:p-7">
-            <p className="text-xs font-medium tracking-wide text-slate-400 uppercase">
+          {dashboard.subjects.length ? (
+            <div className="mt-6 grid gap-2.5 sm:grid-cols-2">
+              {dashboard.subjects.slice(0, 4).map((subject) => (
+                <Link
+                  href="/subjects"
+                  key={subject.id}
+                  className="group flex flex-col rounded-xl border border-[#ece8e1] bg-[#FAFAF8] p-4 transition-all hover:border-sky-200 hover:bg-sky-50/30"
+                >
+                  <span className="text-[9px] font-semibold tracking-[0.18em] text-sky-600 uppercase">
+                    {subject.code}
+                  </span>
+                  <h3 className="mt-2 text-sm leading-snug font-light text-[#1a1916] group-hover:text-sky-700">
+                    {subject.title}
+                  </h3>
+                  <p className="mt-auto pt-4 text-[10px] tracking-wide text-[#b0aa9f]">
+                    {subject.units} units · {subject.section}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              href="/subjects"
+              label="Add your first subject"
+              message="Your courses will anchor your notes, tasks, and schedule."
+            />
+          )}
+        </div>
+
+        {/* Right column */}
+        <div className="flex flex-col gap-4">
+          {/* Dark momentum card */}
+          <div className="rounded-2xl bg-[#1a1916] px-6 py-6 text-white">
+            <p className="text-[9px] font-medium tracking-[0.22em] text-[#6b6862] uppercase">
               At a glance
             </p>
-            <h2 className="mt-1 text-xl font-semibold">Keep your momentum</h2>
-            <div className="mt-6 space-y-4">
+            <h2 className="mt-1.5 text-base font-light text-white">
+              Keep momentum
+            </h2>
+            <div className="mt-5 space-y-3.5">
               {[
-                {
-                  label: "Assignments remaining",
-                  value: pendingAssignments.length,
-                },
+                { label: "Assignments left", value: pendingAssignments.length },
                 { label: "Exams coming up", value: upcomingExams },
                 {
-                  label: "Classes scheduled",
+                  label: "Classes this week",
                   value: dashboard.schedule.length,
                 },
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center justify-between border-b border-white/10 pb-3 last:border-0"
+                  className="flex items-baseline justify-between border-b border-white/[0.07] pb-3.5 last:border-0"
                 >
-                  <span className="text-sm text-slate-300">{item.label}</span>
-                  <span className="text-lg font-semibold">{item.value}</span>
+                  <span className="text-[11px] tracking-wide text-[#7c7970]">
+                    {item.label}
+                  </span>
+                  <span className="text-xl font-light tabular-nums">
+                    {item.value}
+                  </span>
                 </div>
               ))}
             </div>
             <Link
               href="/pomodoro"
-              className="mt-7 inline-flex items-center gap-1.5 text-sm font-medium text-violet-200 hover:text-white"
+              className="mt-5 inline-flex items-center gap-1.5 text-[9px] font-medium tracking-[0.18em] text-sky-400 uppercase transition hover:text-white"
             >
-              Start a focus session <ArrowRight className="size-4" />
+              Start focus session <ArrowRight className="size-3" />
             </Link>
-          </CardContent>
-        </Card>
+          </div>
+
+          {/* Quick links */}
+          <div className="rounded-2xl border border-[#e7e2d9] bg-white p-5">
+            <p className="mb-3.5 text-[9px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+              Quick links
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { href: "/assignments", label: "Tasks", icon: ClipboardList },
+                { href: "/calendar", label: "Calendar", icon: CalendarDays },
+                { href: "/exams", label: "Exams", icon: GraduationCap },
+                { href: "/pomodoro", label: "Focus", icon: Clock3 },
+              ].map(({ href, label, icon: Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="flex items-center gap-2 rounded-lg border border-[#ece8e1] bg-[#FAFAF8] px-3 py-2.5 text-[10px] font-medium tracking-wide text-[#6b6862] transition hover:border-sky-200 hover:text-sky-700"
+                >
+                  <Icon className="size-3.5 shrink-0" strokeWidth={1.5} />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-6 lg:grid-cols-2">
-        <Card className="border-black/6 bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Upcoming tasks</h2>
-              <Link
-                href="/assignments"
-                className="text-sm text-slate-500 hover:text-slate-900"
-              >
-                View all
-              </Link>
-            </div>
-            {pendingAssignments.length ? (
-              <div className="mt-4 space-y-2">
-                {pendingAssignments.slice(0, 3).map((assignment) => (
-                  <div
-                    key={assignment.id}
-                    className="flex items-center gap-3 rounded-lg p-2.5 hover:bg-slate-50"
-                  >
-                    <span className="size-2 rounded-full bg-amber-400" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
-                        {assignment.title}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        Due {assignment.dueAt.toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className="text-xs text-slate-400">
-                      {subjectById.get(assignment.subjectId)?.code}
-                    </span>
+      {/* Tasks + Schedule */}
+      <section className="grid gap-5 lg:grid-cols-2">
+        <div className="rounded-2xl border border-[#e7e2d9] bg-white p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-light tracking-wide text-[#1a1916]">
+              Upcoming tasks
+            </h2>
+            <Link
+              href="/assignments"
+              className="text-[9px] font-medium tracking-[0.15em] text-[#b0aa9f] uppercase hover:text-[#1a1916]"
+            >
+              View all
+            </Link>
+          </div>
+          {pendingAssignments.length ? (
+            <div className="mt-5 divide-y divide-[#f0ece5]">
+              {pendingAssignments.slice(0, 4).map((assignment) => (
+                <div
+                  key={assignment.id}
+                  className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+                >
+                  <span className="size-1.5 shrink-0 rounded-full bg-amber-400" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-light text-[#1a1916]">
+                      {assignment.title}
+                    </p>
+                    <p className="mt-0.5 text-[10px] tracking-wide text-[#b0aa9f]">
+                      Due {assignment.dueAt.toLocaleDateString()}
+                    </p>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                href="/assignments"
-                label="Plan an assignment"
-                message="You have no open assignments right now."
-                compact
-              />
-            )}
-          </CardContent>
-        </Card>
-        <Card className="border-black/6 bg-white shadow-sm">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Class schedule</h2>
-              <Link
-                href="/schedule"
-                className="text-sm text-slate-500 hover:text-slate-900"
-              >
-                View schedule
-              </Link>
+                  <span className="shrink-0 text-[9px] font-medium tracking-[0.12em] text-[#9c9890] uppercase">
+                    {subjectById.get(assignment.subjectId)?.code}
+                  </span>
+                </div>
+              ))}
             </div>
-            {dashboard.schedule.length ? (
-              <div className="mt-4 space-y-2">
-                {dashboard.schedule.slice(0, 3).map((session) => (
-                  <div
-                    key={session.id}
-                    className="flex items-center gap-3 rounded-lg p-2.5 hover:bg-slate-50"
-                  >
-                    <div className="grid size-9 place-items-center rounded-lg bg-violet-50 text-xs font-semibold text-violet-700">
-                      {session.startTime.slice(0, 2)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">
-                        {subjectById.get(session.subjectId)?.title ?? "Class"}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {session.day} · {session.startTime.slice(0, 5)}–
-                        {session.endTime.slice(0, 5)}
-                      </p>
-                    </div>
-                    <span className="text-xs text-slate-400">
-                      {session.room}
-                    </span>
+          ) : (
+            <EmptyState
+              href="/assignments"
+              label="Add a task"
+              message="No open assignments right now."
+              compact
+            />
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-[#e7e2d9] bg-white p-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-light tracking-wide text-[#1a1916]">
+              Class schedule
+            </h2>
+            <Link
+              href="/schedule"
+              className="text-[9px] font-medium tracking-[0.15em] text-[#b0aa9f] uppercase hover:text-[#1a1916]"
+            >
+              View all
+            </Link>
+          </div>
+          {dashboard.schedule.length ? (
+            <div className="mt-5 divide-y divide-[#f0ece5]">
+              {dashboard.schedule.slice(0, 4).map((session) => (
+                <div
+                  key={session.id}
+                  className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+                >
+                  <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#F3EEE7] text-[11px] font-medium text-[#6b6862]">
+                    {session.startTime.slice(0, 2)}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                href="/schedule"
-                label="Add a class"
-                message="Build a schedule you can glance at anytime."
-                compact
-              />
-            )}
-          </CardContent>
-        </Card>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-light text-[#1a1916]">
+                      {subjectById.get(session.subjectId)?.title ?? "Class"}
+                    </p>
+                    <p className="mt-0.5 text-[10px] tracking-wide text-[#b0aa9f]">
+                      {session.day} · {session.startTime.slice(0, 5)}–
+                      {session.endTime.slice(0, 5)}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[10px] text-[#b0aa9f]">
+                    {session.room}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              href="/schedule"
+              label="Add a class"
+              message="Build a schedule you can glance at anytime."
+              compact
+            />
+          )}
+        </div>
       </section>
     </div>
   );
@@ -272,20 +316,21 @@ function Metric({
   hint: string;
 }) {
   return (
-    <Card className="border-black/6 bg-white shadow-sm">
-      <CardContent className="flex items-start justify-between p-5">
-        <div>
-          <p className="text-sm text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
-          <p className="mt-1 text-xs text-slate-400">{hint}</p>
-        </div>
-        <div className="rounded-lg bg-violet-50 p-2.5 text-violet-700">
-          <Icon className="size-4" />
-        </div>
-      </CardContent>
-    </Card>
+    <div className="flex flex-col rounded-2xl border border-[#e7e2d9] bg-white p-5">
+      <div className="flex items-start justify-between">
+        <p className="text-[10px] font-medium tracking-[0.15em] text-[#b0aa9f] uppercase">
+          {label}
+        </p>
+        <Icon className="size-3.5 text-[#ccc8c1]" strokeWidth={1.5} />
+      </div>
+      <p className="mt-3 text-4xl font-extralight text-[#1a1916] tabular-nums">
+        {value}
+      </p>
+      <p className="mt-1 text-[10px] tracking-wide text-[#ccc8c1]">{hint}</p>
+    </div>
   );
 }
+
 function EmptyState({
   href,
   label,
@@ -299,14 +344,14 @@ function EmptyState({
 }) {
   return (
     <div
-      className={`mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 text-center ${compact ? "p-5" : "p-10"}`}
+      className={`mt-5 rounded-xl border border-dashed border-[#ddd8d0] text-center ${compact ? "p-5" : "p-8"}`}
     >
-      <p className="text-sm text-slate-500">{message}</p>
+      <p className="text-xs font-light text-[#b0aa9f]">{message}</p>
       <Link
         href={href}
-        className="mt-3 inline-block text-sm font-medium text-violet-700 hover:text-violet-900"
+        className="mt-2.5 inline-flex items-center gap-1 text-[10px] font-medium tracking-[0.12em] text-sky-600 uppercase hover:text-sky-800"
       >
-        {label} <ArrowRight className="inline size-3.5" />
+        {label} <ArrowRight className="size-3" />
       </Link>
     </div>
   );

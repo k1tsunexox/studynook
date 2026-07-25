@@ -4,17 +4,20 @@ import { getCurrentSubjects } from "@/features/subjects/services/subject.service
 
 export default async function SubjectsPage() {
   const subjects = await getCurrentSubjects();
-
   return (
-    <main className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold">Subjects</h1>
-
-        <p className="text-muted-foreground">Manage your enrolled subjects.</p>
+    <main className="mx-auto max-w-4xl space-y-8 pb-10">
+      <div className="border-b border-[#e7e2d9] pb-7">
+        <p className="text-[10px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+          Workspace
+        </p>
+        <h1 className="mt-2 text-3xl font-light tracking-tight text-[#1a1916]">
+          Subjects
+        </h1>
+        <p className="mt-1.5 text-sm font-light tracking-wide text-[#9c9890]">
+          Manage your enrolled subjects.
+        </p>
       </div>
-
       <SubjectForm />
-
       <SubjectList subjects={subjects} />
     </main>
   );

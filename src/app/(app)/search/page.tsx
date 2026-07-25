@@ -2,7 +2,6 @@ import { File, FileText, Layers } from "lucide-react";
 import { Suspense } from "react";
 import Link from "next/link";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SearchBar } from "@/features/search/components/search-bar";
 import { performGlobalSearch } from "@/features/search/services/search.service";
 
@@ -12,7 +11,6 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-
   const query = q ?? "";
 
   const results = await performGlobalSearch(query);
@@ -23,119 +21,110 @@ export default async function SearchPage({
     results.documents.length > 0;
 
   return (
-    <main className="space-y-8 p-6">
-      <div className="flex flex-col items-center justify-center space-y-4 py-8">
-        <h1 className="text-3xl font-bold">Global Search</h1>
+    <main className="mx-auto max-w-4xl space-y-8 pb-10">
+      <div className="border-b border-[#e7e2d9] pb-7">
+        <p className="text-[10px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+          Tools
+        </p>
 
-        <Suspense fallback={<div>Loading search...</div>}>
-          <SearchBar />
-        </Suspense>
+        <h1 className="mt-2 text-3xl font-light tracking-tight text-[#1a1916]">
+          Search
+        </h1>
       </div>
 
+      <Suspense
+        fallback={
+          <div className="text-sm font-light text-[#b0aa9f]">Loading…</div>
+        }
+      >
+        <SearchBar />
+      </Suspense>
+
       {query && !hasResults && (
-        <div className="text-muted-foreground py-12 text-center">
-          No results found for &quot;{query}&quot;.
-        </div>
+        <p className="py-12 text-center text-sm font-light text-[#b0aa9f]">
+          No results for &quot;{query}&quot;.
+        </p>
       )}
 
       {query && hasResults && (
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {results.notes.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <FileText className="h-5 w-5" />
+            <div className="space-y-2.5">
+              <p className="flex items-center gap-1.5 text-[9px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+                <FileText className="size-3" strokeWidth={1.5} />
                 Notes
-              </h2>
+              </p>
 
               {results.notes.map((note) => (
-                <Card
+                <Link
                   key={note.id}
-                  className="hover:border-primary transition-colors"
+                  href="/notes"
+                  className="block rounded-xl border border-[#e7e2d9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/20"
                 >
-                  <Link href="/notes">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{note.title}</CardTitle>
+                  <p className="font-light text-[#1a1916]">{note.title}</p>
 
-                      {note.subject && (
-                        <p className="text-muted-foreground text-xs">
-                          {note.subject.code}
-                        </p>
-                      )}
-                    </CardHeader>
+                  {note.subject?.code && (
+                    <p className="mt-0.5 text-[9px] font-semibold tracking-[0.15em] text-sky-600 uppercase">
+                      {note.subject.code}
+                    </p>
+                  )}
 
-                    <CardContent>
-                      <p className="text-muted-foreground line-clamp-2 text-sm">
-                        {note.content}
-                      </p>
-                    </CardContent>
-                  </Link>
-                </Card>
+                  <p className="mt-2 line-clamp-2 text-[11px] font-light tracking-wide text-[#b0aa9f]">
+                    {note.content}
+                  </p>
+                </Link>
               ))}
             </div>
           )}
 
           {results.flashcards.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <Layers className="h-5 w-5" />
+            <div className="space-y-2.5">
+              <p className="flex items-center gap-1.5 text-[9px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+                <Layers className="size-3" strokeWidth={1.5} />
                 Flashcards
-              </h2>
+              </p>
 
-              {results.flashcards.map((card) => (
-                <Card
-                  key={card.id}
-                  className="hover:border-primary transition-colors"
+              {results.flashcards.map((flashcard) => (
+                <Link
+                  key={flashcard.id}
+                  href="/flashcards"
+                  className="block rounded-xl border border-[#e7e2d9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/20"
                 >
-                  <Link href="/flashcards">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{card.question}</CardTitle>
+                  <p className="font-light text-[#1a1916]">
+                    {flashcard.question}
+                  </p>
 
-                      {card.note && (
-                        <p className="text-muted-foreground text-xs">
-                          From: {card.note.title}
-                        </p>
-                      )}
-                    </CardHeader>
-
-                    <CardContent>
-                      <p className="text-muted-foreground line-clamp-2 text-sm">
-                        {card.answer}
-                      </p>
-                    </CardContent>
-                  </Link>
-                </Card>
+                  <p className="mt-2 line-clamp-2 text-[11px] font-light tracking-wide text-[#b0aa9f]">
+                    {flashcard.answer}
+                  </p>
+                </Link>
               ))}
             </div>
           )}
 
           {results.documents.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="flex items-center gap-2 text-xl font-semibold">
-                <File className="h-5 w-5" />
+            <div className="space-y-2.5">
+              <p className="flex items-center gap-1.5 text-[9px] font-medium tracking-[0.22em] text-[#b0aa9f] uppercase">
+                <File className="size-3" strokeWidth={1.5} />
                 Documents
-              </h2>
+              </p>
 
               {results.documents.map((doc) => (
-                <Card
+                <a
                   key={doc.id}
-                  className="hover:border-primary transition-colors"
+                  href={doc.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl border border-[#e7e2d9] bg-white p-4 transition hover:border-sky-200 hover:bg-sky-50/20"
                 >
-                  <a
-                    href={doc.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-lg">{doc.title}</CardTitle>
+                  <p className="font-light text-[#1a1916]">{doc.title}</p>
 
-                      {doc.subject && (
-                        <p className="text-muted-foreground text-xs">
-                          {doc.subject.code}
-                        </p>
-                      )}
-                    </CardHeader>
-                  </a>
-                </Card>
+                  {doc.subject?.code && (
+                    <p className="mt-0.5 text-[9px] font-semibold tracking-[0.15em] text-sky-600 uppercase">
+                      {doc.subject.code}
+                    </p>
+                  )}
+                </a>
               ))}
             </div>
           )}
