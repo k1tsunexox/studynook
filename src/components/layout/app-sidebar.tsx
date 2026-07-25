@@ -50,17 +50,24 @@ function NavIcon({
     <Link
       href={href}
       title={label}
-      className={`group relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-150 ${
+      aria-label={label}
+      className={`group relative flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 ${
         active
-          ? "bg-sky-600 text-white shadow-sm"
-          : "text-slate-400 hover:bg-[#E8E2D9] hover:text-slate-700"
+          ? "bg-[#1a1916] text-white"
+          : "text-[#9c9890] hover:bg-[#eae6df] hover:text-[#1a1916]"
       }`}
     >
-      <Icon className="h-[18px] w-[18px]" />
-      {/* Tooltip */}
-      <span className="pointer-events-none absolute left-14 z-50 rounded-lg bg-[#2a2825] px-2.5 py-1.5 text-xs font-medium whitespace-nowrap text-white opacity-0 shadow-lg transition-all duration-150 group-hover:opacity-100">
+      <Icon
+        className="h-[17px] w-[17px] shrink-0"
+        strokeWidth={active ? 2 : 1.5}
+      />
+
+      {/* Floating tooltip */}
+      <span
+        className="pointer-events-none absolute top-1/2 left-[calc(100%+10px)] z-[100] -translate-y-1/2 rounded-md bg-[#1a1916] px-2.5 py-1.5 text-[10px] font-medium tracking-[0.12em] whitespace-nowrap text-white uppercase opacity-0 shadow-lg transition-all duration-150 group-hover:opacity-100"
+        role="tooltip"
+      >
         {label}
-        <span className="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-[#2a2825]" />
       </span>
     </Link>
   );
@@ -72,30 +79,65 @@ export function AppSidebar() {
     pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <aside className="hidden w-16 shrink-0 flex-col items-center border-r border-[#E7E2D9] bg-[#F3EEE7] py-4 lg:flex">
-      {/* Logo mark */}
-      <Link
-        href="/dashboard"
-        className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 text-white shadow-sm transition hover:bg-sky-700"
-        title="StudyNook"
-      >
-        <span className="text-sm font-bold tracking-tight">SN</span>
-      </Link>
+    <>
+      {/* ── Fixed vertical rail — desktop ───────────────────── */}
+      <aside className="fixed top-0 left-0 z-50 hidden h-screen w-16 flex-col items-center border-r border-[#e7e2d9] bg-[#F3EEE7] py-5 lg:flex">
+        {/* Logomark */}
+        <Link
+          href="/dashboard"
+          title="StudyNook"
+          className="mb-6 flex h-9 w-9 items-center justify-center rounded-lg bg-[#1a1916] text-white transition hover:bg-[#37352f]"
+        >
+          <span className="text-[11px] font-semibold tracking-[0.08em]">
+            SN
+          </span>
+        </Link>
 
-      <div className="mx-auto mb-3 h-px w-8 bg-[#E7E2D9]" />
+        <div className="mb-3 h-px w-7 bg-[#e7e2d9]" />
 
-      {/* Primary nav */}
-      <nav className="flex flex-1 flex-col items-center gap-1 px-2">
-        {primaryLinks.map((link) => (
-          <NavIcon key={link.href} {...link} active={isActive(link.href)} />
-        ))}
+        {/* Primary links */}
+        <nav className="flex flex-1 flex-col items-center gap-1 overflow-y-auto px-3">
+          {primaryLinks.map((link) => (
+            <NavIcon key={link.href} {...link} active={isActive(link.href)} />
+          ))}
 
-        <div className="my-2 h-px w-8 bg-[#E7E2D9]" />
+          <div className="my-2 h-px w-7 bg-[#e7e2d9]" />
 
-        {utilityLinks.map((link) => (
-          <NavIcon key={link.href} {...link} active={isActive(link.href)} />
-        ))}
+          {utilityLinks.map((link) => (
+            <NavIcon key={link.href} {...link} active={isActive(link.href)} />
+          ))}
+        </nav>
+
+        {/* Bottom dot indicator */}
+        <div
+          className="mt-4 h-1.5 w-1.5 rounded-full bg-emerald-400"
+          title="Online"
+        />
+      </aside>
+
+      {/* ── Bottom tab bar — mobile ──────────────────────────── */}
+      <nav className="fixed bottom-0 left-0 z-50 flex w-full items-center justify-around border-t border-[#e7e2d9] bg-[#F3EEE7]/95 py-2 backdrop-blur-sm lg:hidden">
+        {[...primaryLinks.slice(0, 4), utilityLinks[0], utilityLinks[3]].map(
+          ({ href, label, icon: Icon }) => {
+            const active = isActive(href);
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-label={label}
+                className={`flex flex-col items-center gap-0.5 px-2 py-1 transition-colors ${
+                  active ? "text-[#1a1916]" : "text-[#b0aa9f]"
+                }`}
+              >
+                <Icon className="h-5 w-5" strokeWidth={active ? 2 : 1.5} />
+                <span className="text-[9px] tracking-[0.08em] uppercase">
+                  {label}
+                </span>
+              </Link>
+            );
+          },
+        )}
       </nav>
-    </aside>
+    </>
   );
 }
