@@ -21,12 +21,12 @@ export async function createExam(data: {
 }) {
   const [exam] = await db
     .insert(exams)
-    .values({
-      ...data,
-      startsAt: new Date(data.startsAt),
-      endsAt: new Date(data.endsAt),
-    })
+    .values({ ...data, startsAt: new Date(data.startsAt), endsAt: new Date(data.endsAt) })
     .returning();
-
   return exam;
+}
+
+export async function deleteExam(id: string) {
+  const [deleted] = await db.delete(exams).where(eq(exams.id, id)).returning();
+  return deleted;
 }
