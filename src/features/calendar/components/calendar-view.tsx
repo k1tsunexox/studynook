@@ -179,7 +179,7 @@ export function CalendarView({ events }: Props) {
               <button
                 key={idx}
                 onClick={() => setSelected(sel ? null : cell.date)}
-                className={`group relative min-h-[80px] p-2 text-left transition-colors ${borderRight} ${borderBottom} ${
+                className={`group relative min-h-20 p-2 text-left transition-colors ${borderRight} ${borderBottom} ${
                   !cell.isCurrentMonth ? "bg-[#FAFAF8]" : ""
                 } ${sel ? "bg-sky-50/60" : "hover:bg-[#FAFAF8]"}`}
               >

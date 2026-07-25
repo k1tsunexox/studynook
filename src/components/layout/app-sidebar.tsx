@@ -57,14 +57,11 @@ function NavIcon({
           : "text-[#9c9890] hover:bg-[#eae6df] hover:text-[#1a1916]"
       }`}
     >
-      <Icon
-        className="h-[17px] w-[17px] shrink-0"
-        strokeWidth={active ? 2 : 1.5}
-      />
+      <Icon className="h-4.25 w-4.25 shrink-0" strokeWidth={active ? 2 : 1.5} />
 
       {/* Floating tooltip */}
       <span
-        className="pointer-events-none absolute top-1/2 left-[calc(100%+10px)] z-[100] -translate-y-1/2 rounded-md bg-[#1a1916] px-2.5 py-1.5 text-[10px] font-medium tracking-[0.12em] whitespace-nowrap text-white uppercase opacity-0 shadow-lg transition-all duration-150 group-hover:opacity-100"
+        className="pointer-events-none absolute top-1/2 left-[calc(100%+10px)] z-100 -translate-y-1/2 rounded-md bg-[#1a1916] px-2.5 py-1.5 text-[10px] font-medium tracking-[0.12em] whitespace-nowrap text-white uppercase opacity-0 shadow-lg transition-all duration-150 group-hover:opacity-100"
         role="tooltip"
       >
         {label}
