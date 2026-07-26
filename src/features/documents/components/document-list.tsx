@@ -1,17 +1,9 @@
 "use client";
 
 import { ExternalLink, FileText, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 import { deleteDocumentAction } from "../actions/document";
 
@@ -21,79 +13,91 @@ interface Document {
   title: string;
   fileUrl: string;
   createdAt: Date;
-  subject?: {
-    code: string;
-    title: string;
-  };
+  subject?: { code: string; title: string } | null;
 }
 
-interface DocumentListProps {
-  documents: Document[];
-}
-
-export function DocumentList({ documents }: DocumentListProps) {
-  const router = useRouter();
+export function DocumentList({ documents }: { documents: Document[] }) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const handleDelete = (id: string) => {
-    if (!confirm("Are you sure you want to delete this document?")) return;
-
+  const handleDelete = (id: string, title: string) => {
+    if (!confirm(`Delete "${title}"?`)) return;
     startTransition(async () => {
-      await deleteDocumentAction(id);
+      const result = await deleteDocumentAction(id);
+      if (!result.success) {
+        toast.error(result.message);
+        return;
+      }
+      toast.success("Document removed.");
       router.refresh();
     });
   };
 
   if (documents.length === 0) {
     return (
-      <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
-        No documents found. Link your first file above!
+      <div className="rounded-2xl border border-dashed border-[#ddd8d0] py-14 text-center">
+        <p className="text-sm font-light text-[#b0aa9f]">No documents yet.</p>
+        <p className="mt-1 text-[10px] tracking-[0.12em] text-[#ccc8c1] uppercase">
+          Link your first file using the form above
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {documents.map((doc) => (
-        <Card key={doc.id} className="flex flex-col">
-          <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-            <div className="space-y-1">
-              <CardTitle className="line-clamp-1 flex items-center gap-2 text-lg">
-                <FileText className="text-muted-foreground h-5 w-5" />
-                {doc.title}
-              </CardTitle>
+        <div
+          key={doc.id}
+          className="group flex flex-col rounded-2xl border border-[#e7e2d9] bg-white p-5 transition hover:border-sky-200 hover:bg-sky-50/10"
+        >
+          {/* Header */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
               {doc.subject && (
-                <CardDescription>{doc.subject.code}</CardDescription>
+                <span className="text-[9px] font-bold tracking-[0.2em] text-sky-600 uppercase">
+                  {doc.subject.code}
+                </span>
               )}
+              <h3 className="mt-1 flex items-center gap-1.5 text-sm font-light text-[#1a1916]">
+                <FileText
+                  className="size-3.5 shrink-0 text-[#ccc8c1]"
+                  strokeWidth={1.5}
+                />
+                <span className="line-clamp-1">{doc.title}</span>
+              </h3>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-destructive hover:bg-destructive/10 hover:text-destructive h-8 w-8 shrink-0"
-              onClick={() => handleDelete(doc.id)}
+            <button
+              onClick={() => handleDelete(doc.id, doc.title)}
               disabled={isPending}
+              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[#e0dbd3] opacity-0 transition group-hover:opacity-100 hover:bg-red-50 hover:text-red-500"
+              aria-label={`Delete "${doc.title}"`}
             >
-              <Trash2 className="h-4 w-4" />
-              <span className="sr-only">Delete document</span>
-            </Button>
-          </CardHeader>
-          <CardContent className="flex flex-1 flex-col justify-between pt-4">
-            <p className="text-muted-foreground text-xs">
-              Added {new Date(doc.createdAt).toLocaleDateString()}
+              <Trash2 className="size-3.5" strokeWidth={1.5} />
+            </button>
+          </div>
+
+          <div className="my-3.5 h-px bg-[#f0ece5]" />
+
+          {/* Footer */}
+          <div className="flex items-center justify-between">
+            <p className="text-[9px] font-medium tracking-[0.12em] text-[#ccc8c1] uppercase">
+              {new Date(doc.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
             </p>
-            <Button
-              asChild
-              variant="secondary"
-              className="mt-4 w-full"
-              size="sm"
+            <a
+              href={doc.fileUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="flex items-center gap-1 text-[10px] font-medium tracking-[0.12em] text-sky-600 uppercase transition hover:text-sky-800"
             >
-              <a href={doc.fileUrl} target="_blank" rel="noreferrer noopener">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Open Document
-              </a>
-            </Button>
-          </CardContent>
-        </Card>
+              Open <ExternalLink className="size-3" strokeWidth={1.5} />
+            </a>
+          </div>
+        </div>
       ))}
     </div>
   );
